@@ -1,0 +1,465 @@
+/* =========================================================
+   Calculator – style.css
+   Sections: 1. Variables  2. Base  3. Layout  4. Display
+             5. Keypad  6. History  7. Responsive  8. Motion
+   ========================================================= */
+
+/* ---------- 1. Variables ---------- */
+:root {
+  --text: #f5f5f7;
+  --muted: #9a9aa3;
+  --panel: rgba(26, 26, 30, 0.72);
+  --border: rgba(255, 255, 255, 0.09);
+
+  --key-number: #2d2d33;
+  --key-number-hover: #3b3b43;
+  --key-util: #a8a8b0;
+  --key-util-hover: #c2c2ca;
+  --key-util-text: #111114;
+
+  --accent: #ff9f0a;
+  --accent-light: #ffb94d;
+  --accent-text: #1c1200;
+  --error: #ff7a6e;
+
+  --radius: 22px;
+  --gap: clamp(8px, 1.5vw, 14px);
+  --key-height: clamp(54px, 8.5vh, 78px);
+}
+
+/* ---------- 2. Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vw, 32px);
+  overflow-x: hidden;
+  color: var(--text);
+  font-family: "Inter", "SF Pro Display", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  background:
+    radial-gradient(1200px 700px at 12% -10%, #1f1f2a 0%, transparent 60%),
+    radial-gradient(900px 600px at 100% 110%, #2b1b06 0%, transparent 55%),
+    linear-gradient(160deg, #0b0b10, #000);
+  background-attachment: fixed;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* ---------- 3. Layout ---------- */
+.app {
+  width: min(100%, 980px);
+  display: grid;
+  grid-template-columns: minmax(0, 620px) minmax(0, 320px);
+  gap: 24px;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.calculator,
+.history {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 32px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.calculator {
+  padding: clamp(16px, 3vw, 28px);
+}
+
+.calc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.calc-title {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+}
+
+.calc-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.history-toggle {
+  display: none; /* shown on small screens only */
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.history-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ---------- 4. Display ---------- */
+.display {
+  margin: 18px 0 20px;
+  padding: 12px 18px 14px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.display-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  flex: none;
+  width: 40px;
+  height: 36px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.icon-btn:active,
+.icon-btn.pressed {
+  transform: scale(0.92);
+}
+
+.expression {
+  flex: 1;
+  min-width: 0;
+  min-height: 1.5em;
+  text-align: right;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  color: var(--muted);
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.expression::-webkit-scrollbar {
+  display: none;
+}
+
+.result {
+  display: block;
+  margin-top: 4px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: clamp(2.6rem, 7vw, 4.2rem);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.result.is-error {
+  color: var(--error);
+  font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+  font-weight: 400;
+}
+
+.result.bump {
+  animation: bump 0.14s ease-out;
+}
+
+/* ---------- 5. Keypad ---------- */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+.btn {
+  height: var(--key-height);
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--key-number);
+  color: var(--text);
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 6px 14px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 0.12s ease,
+    filter 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--key-number-hover);
+}
+
+.btn:active,
+.btn.pressed {
+  transform: scale(0.95);
+  filter: brightness(1.18);
+}
+
+.btn:focus-visible,
+.icon-btn:focus-visible,
+.history-toggle:focus-visible,
+.history-clear:focus-visible,
+.history-item:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+/* Utility keys: AC, C, % */
+.btn--util {
+  background: var(--key-util);
+  color: var(--key-util-text);
+  font-weight: 600;
+}
+
+.btn--util:hover {
+  background: var(--key-util-hover);
+}
+
+/* Operator keys: ÷ × − + */
+.btn--op {
+  background: linear-gradient(180deg, var(--accent-light), var(--accent));
+  color: var(--accent-text);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 600;
+}
+
+.btn--op:hover {
+  background: linear-gradient(180deg, #ffc56b, #ffa51f);
+}
+
+/* Highlights the operator that is waiting for the next number */
+.btn--op.is-active {
+  background: #fff;
+  color: #a85500;
+}
+
+/* Equals key: the most prominent button */
+.btn--equals {
+  background: linear-gradient(180deg, #ffc760, #ff8a00);
+  color: var(--accent-text);
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
+  font-weight: 700;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 8px 26px rgba(255, 159, 10, 0.45);
+}
+
+.btn--equals:hover {
+  background: linear-gradient(180deg, #ffd078, #ff9519);
+}
+
+/* ---------- 6. History ---------- */
+.history {
+  position: relative;
+  min-height: 440px;
+}
+
+.history-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-title {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+}
+
+.history-clear {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.history-clear:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.history-empty {
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.history-list {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: block;
+  width: 100%;
+  padding: 12px 8px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  text-align: right;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.history-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.history-expression {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.history-result {
+  display: block;
+  margin-top: 2px;
+  font-size: 1.3rem;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- 7. Responsive ---------- */
+@media (max-width: 860px) {
+  .app {
+    grid-template-columns: minmax(0, 560px);
+    gap: 16px;
+  }
+
+  .history-toggle {
+    display: inline-flex;
+  }
+
+  /* History becomes a collapsible section under the calculator */
+  .history {
+    display: none;
+    min-height: 0;
+  }
+
+  .history.is-open {
+    display: block;
+  }
+
+  .history-inner {
+    position: static;
+    max-height: 300px;
+  }
+
+  .history-list {
+    max-height: 210px;
+  }
+}
+
+@media (max-width: 400px) {
+  .calculator {
+    border-radius: 26px;
+  }
+
+  .display {
+    padding: 10px 14px 12px;
+  }
+}
+
+/* Short screens, e.g. phones in landscape */
+@media (max-height: 520px) {
+  :root {
+    --key-height: 44px;
+    --radius: 16px;
+    --gap: 8px;
+  }
+
+  body {
+    place-items: start center;
+  }
+
+  .calc-subtitle {
+    display: none;
+  }
+
+  .display {
+    margin: 10px 0 12px;
+  }
+
+  .result {
+    font-size: 2.2rem;
+  }
+}
+
+/* ---------- 8. Motion ---------- */
+@keyframes bump {
+  from { transform: scale(0.97); opacity: 0.7; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
