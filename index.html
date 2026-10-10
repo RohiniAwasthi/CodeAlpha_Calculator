@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050507" />
+  <meta name="description" content="A premium, keyboard-friendly calculator. Simple. Smart. Precise." />
+  <title>Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="app">
+
+    <!-- ============ Calculator panel ============ -->
+    <section class="calculator" aria-label="Calculator">
+      <header class="calc-header">
+        <div>
+          <h1 class="calc-title">CALCULATOR</h1>
+          <p class="calc-subtitle">Simple. Smart. Precise.</p>
+        </div>
+        <button type="button" class="history-toggle" id="history-toggle"
+                aria-expanded="false" aria-controls="history">History</button>
+      </header>
+
+      <div class="display">
+        <div class="display-top">
+          <button type="button" class="icon-btn" data-id="backspace" aria-label="Backspace, delete last digit">⌫</button>
+          <div class="expression" id="expression" aria-label="Previous calculation">&nbsp;</div>
+        </div>
+        <output class="result" id="result" aria-label="Current value">0</output>
+      </div>
+
+      <div class="keypad" role="group" aria-label="Calculator keys">
+        <!-- Row 1 -->
+        <button type="button" class="btn btn--util" data-id="allclear" aria-label="All clear">AC</button>
+        <button type="button" class="btn btn--util" data-id="clear" aria-label="Clear current entry">C</button>
+        <button type="button" class="btn btn--util" data-id="percent" aria-label="Percentage">%</button>
+        <button type="button" class="btn btn--op" data-id="divide" aria-label="Divide">÷</button>
+
+        <!-- Row 2 -->
+        <button type="button" class="btn" data-id="7">7</button>
+        <button type="button" class="btn" data-id="8">8</button>
+        <button type="button" class="btn" data-id="9">9</button>
+        <button type="button" class="btn btn--op" data-id="multiply" aria-label="Multiply">×</button>
+
+        <!-- Row 3 -->
+        <button type="button" class="btn" data-id="4">4</button>
+        <button type="button" class="btn" data-id="5">5</button>
+        <button type="button" class="btn" data-id="6">6</button>
+        <button type="button" class="btn btn--op" data-id="subtract" aria-label="Subtract">−</button>
+
+        <!-- Row 4 -->
+        <button type="button" class="btn" data-id="1">1</button>
+        <button type="button" class="btn" data-id="2">2</button>
+        <button type="button" class="btn" data-id="3">3</button>
+        <button type="button" class="btn btn--op" data-id="add" aria-label="Add">+</button>
+
+        <!-- Row 5 -->
+        <button type="button" class="btn" data-id="sign" aria-label="Toggle positive or negative">±</button>
+        <button type="button" class="btn" data-id="0">0</button>
+        <button type="button" class="btn" data-id="." aria-label="Decimal point">.</button>
+        <button type="button" class="btn btn--equals" data-id="equals" aria-label="Equals">=</button>
+      </div>
+    </section>
+
+    <!-- ============ History panel ============ -->
+    <aside class="history" id="history" aria-label="Calculation history">
+      <div class="history-inner">
+        <div class="history-header">
+          <h2 class="history-title">HISTORY</h2>
+          <button type="button" class="history-clear" id="history-clear">Clear</button>
+        </div>
+        <p class="history-empty" id="history-empty">No calculations yet.</p>
+        <ul class="history-list" id="history-list"></ul>
+      </div>
+    </aside>
+
+  </main>
+</body>
+</html>
